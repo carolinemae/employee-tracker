@@ -25,4 +25,4 @@ VALUES  ("Bentley", "Thomson",      10, NULL),
         ("Simone", "Van Zoeren",    6,  4),
         ("Jordon", "Oreilly",       7,  1),
         ("Bella", "Patterson",      8,  8),
-        ("Sadie", "Thomson",        9,  7);
+        ("Sadie", "Thomson",        9,  8);
