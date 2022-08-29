@@ -1,6 +1,6 @@
 # Employee Tracker
 ## Description
-<!-- Add description -->
+Command-line application to manager a company's employee database, using Node.js, Inquirer and MySQL.
 ## Table of Contents
 1. [User Story](#user-story)
 1. [Acceptance Criteria](#acceptance-criteria)
@@ -34,3 +34,23 @@ THEN I am prompted to enter the employee’s first name, last name, role, and ma
 WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 ```
+## Installation
+Run 'npm i' to install dependencies including: console.table, dotenv, inquirer, mysql2. Start by creating the database by running 'mysql -u root -p' and then 'source schema.sql' from the 'db' folder provided. You can then run the command 'source seeds.sql' from the same folder to populate the database.
+## Usage
+To start using the application, open the terminal and run command 'node index.js' provided in the main directory. You will then be provided a menu from options to choose from.
+## Screenshots
+![screenshot-01](./images/screenshot-01.jpg)
+
+![screenshot-02](./images/screenshot-02.jpg)
+
+![screenshot-03](./images/screenshot-03.jpg)
+
+![screenshot-04](./images/screenshot-04.jpg)
+## Links
+GitHub: [https://github.com/carolinemae](https://github.com/carolinemae/employee-tracker)
+
+Video (demo): [https://drive.google.com/file/d/1c1BFKKA3DgmHXz5bhMX2VhLs7oDMDOUf/view](https://drive.google.com/file/d/1c1BFKKA3DgmHXz5bhMX2VhLs7oDMDOUf/view)
+
+Email: [carolinemaee@live.com](mailto:carolinemaee@live.com)
+
+[Back to the top](#employee-tracker)
