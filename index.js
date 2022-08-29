@@ -28,15 +28,12 @@ const somethingElse = [
         type: 'list', 
         name: 'somethingElse', 
         message: 'Would you like to do something else?',
-        choices: [  {name: 'Yes', value: 'Y'},
-                    {name: 'No', value: 'N'}
-                ]
+        choices: [{name: 'Yes', value: 'Y'}, {name: 'No', value: 'N'}]
     }
 ]
 
 function prompts(){
     inquirer.prompt(mainMenu).then((answer) => {
-        // console.log(answer.mainMenu);
         if (answer.mainMenu == 0) {
             viewAllEmployees();
         } else if (answer.mainMenu == 1) {
@@ -58,18 +55,17 @@ function prompts(){
         } else if (answer.mainMenu == 9) {
             deleteDepartment();
         } else {
-            console.log("You're finished!")
+            console.log("\x1b[36m","You're finished!","\x1b[0m")
         }
     })
 }
 
 function doSomethingElse() {
     inquirer.prompt(somethingElse).then((answer) => {
-        // console.log(answer.somethingElse);
         if (answer.somethingElse == 'Y') {
             prompts();
         } else {
-            console.log("You're finished!")
+            console.log("\x1b[36m","You're finished!","\x1b[0m")
         }
     })
 }
@@ -82,7 +78,6 @@ function viewAllEmployees() {
         LEFT JOIN roles ON e.role_id = roles.id
         LEFT JOIN departments ON departments.id = roles.department_id`, 
         function(err, res) {
-        // console.log('Employees');
         console.table(res);
         doSomethingElse();
     })
@@ -91,77 +86,39 @@ function viewAllEmployees() {
 async function addEmployee() {
     connection.query(`SELECT id AS value, title AS name from roles; SELECT id AS value, CONCAT(first_name,' ',last_name) AS name FROM employees;`, function(err, results) {
         inquirer.prompt([
-            {
-                type: 'input',
-                name: 'newEmpFirst',
-                message: 'First name:'
-            },
-            {
-                type: 'input',
-                name: 'newEmpLast',
-                message: 'Last name:'
-            },
-            {
-                type: 'list',
-                name: 'newEmpRole',
-                message: 'Job role?',
-                choices: results[0]
-            },
-            {
-                type: 'list',
-                name: 'newEmpManager',
-                message: 'Who is their manager?',
-                choices: results[1]
-            }
+            {type: 'input',     name: 'newEmpFirst',    message: 'First name:'},
+            {type: 'input',     name: 'newEmpLast',     message: 'Last name:'},
+            {type: 'list',      name: 'newEmpRole',     message: 'Job role?',               choices: results[0]},
+            {type: 'list',      name: 'newEmpManager',  message: 'Who is their manager?',   choices: results[1]}
         ]).then((answers) => {
-            connection.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${answers.newEmpFirst}","${answers.newEmpLast}","${answers.newEmpRole}","${answers.newEmpManager}")`, function() {
-                doSomethingElse();
-            })
+            console.log("\x1b[36m",'Employee added!',"\x1b[36m");
+            connection.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${answers.newEmpFirst}","${answers.newEmpLast}","${answers.newEmpRole}","${answers.newEmpManager}")`);
+            doSomethingElse();
         })
     })
 }
 
 function updateRole() {
     connection.query(`SELECT id AS value, CONCAT(first_name,' ',last_name) AS name FROM employees; SELECT roles.id AS value, roles.title AS name FROM roles;`, function(err, results) {
-        // console.log(results[1])
         inquirer.prompt([
-            {
-                type: 'list',
-                name: 'updateRole',
-                message: 'Select employee:',
-                choices: results[0]
-            },
-            {
-                type: 'list',
-                name: 'newRole',
-                message: 'Updated role:',
-                choices: results[1]
-            },
-            {
-                type: 'list',
-                name: 'updateManager',
-                message: 'Update manager?',
-                choices: [{value: 'Y', name: 'Yes'},{value: 'N', name: 'No'}]
-            }
+            {type: 'list', name: 'updateRole',      message: 'Select employee:',    choices: results[0]},
+            {type: 'list', name: 'newRole',         message: 'Updated role:',       choices: results[1]},
+            {type: 'list', name: 'updateManager',   message: 'Update manager?',     choices: [{value: 'Y', name: 'Yes'}, {value: 'N', name: 'No'}]}
         ]).then((answers) => {
             let updatingEmployee = answers.updateRole;
             connection.query(`UPDATE employees SET role_id = "${answers.newRole}" WHERE id = ${answers.updateRole}`);
             if (answers.updateManager == 'Y') {
                 connection.query(`SELECT id AS value, CONCAT(first_name,' ', last_name) AS name FROM employees`, function(err, res) {
                     inquirer.prompt([
-                        {
-                            type: 'list',
-                            name: 'newManager',
-                            message: 'New manager:',
-                            choices: res
-                        }
+                        {type: 'list', name: 'newManager', message: 'New manager:', choices: res}
                     ]).then((answers) => {
+                        console.log("\x1b[36m",'Employee role updated!',"\x1b[36m");
                         connection.query(`UPDATE employees SET manager_id = ${answers.newManager} WHERE id = ${updatingEmployee}`);
                         doSomethingElse();
                     })
-                    
                 })
             } else {
+                console.log("\x1b[36m",'Employee role updated!',"\x1b[36m");
                 doSomethingElse();
             }
         })
@@ -178,23 +135,11 @@ function viewRoles() {
 function addRole() {
     connection.query(`SELECT id AS value, dept_name AS name FROM departments`, function(err, res) {
         inquirer.prompt([
-            {
-                type: 'input',
-                name: 'newRole',
-                message: 'New role name:'
-            },
-            {
-                type: 'input',
-                name: 'newSalary',
-                message: 'Salary:'
-            },
-            {
-                type: 'list',
-                name: 'addToDept',
-                message: 'Add to department:',
-                choices: res
-            }
+            {type: 'input', name: 'newRole', message: 'New role name:'},
+            {type: 'input', name: 'newSalary', message: 'Salary:'},
+            {type: 'list', name: 'addToDept', message: 'Add to department:', choices: res}
         ]).then((answers) => {
+            console.log("\x1b[36m",'Role added!',"\x1b[36m");
             connection.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${answers.newRole}",${answers.newSalary},${answers.addToDept})`);
             doSomethingElse();
         })
@@ -210,17 +155,13 @@ function viewDepartments() {
 
 function addDepartment() {
     inquirer.prompt([
-        {
-            type: 'input',
-            name: 'newDepartment',
-            message: 'Name of department?'
-        }
+        {type: 'input', name: 'newDepartment', message: 'Name of department?'}
     ]).then((answer) => {
         const sql = `INSERT INTO departments (dept_name) VALUES (?);`
         const params = [`${answer.newDepartment}`];
 
         connection.query(sql, params, (err, res) => {
-            console.log('Department added!');
+            console.log("\x1b[36m",'Department added!',"\x1b[36m");
             doSomethingElse();
         })
     })
@@ -229,13 +170,9 @@ function addDepartment() {
 function deleteEmployee(){
     connection.query(`SELECT id AS value, CONCAT(first_name,' ',last_name) AS name FROM employees`, function(err, res) {
         inquirer.prompt([
-            {
-                type: 'list',
-                name: 'deleteEmp',
-                message: 'Select employee to remove:',
-                choices: res
-            }
+            {type: 'list', name: 'deleteEmp', message: 'Select employee to remove:', choices: res}
         ]).then((answers) => {
+            console.log("\x1b[36m",`Employee deleted!`,"\x1b[36m");
             connection.query(`DELETE FROM employees WHERE id = ${answers.deleteEmp}`);
             doSomethingElse();
         })
@@ -245,13 +182,9 @@ function deleteEmployee(){
 function deleteRole(){
     connection.query(`SELECT id AS value, title AS name FROM roles`, function(err, res) {
         inquirer.prompt([
-            {
-                type: 'list',
-                name: 'deleteRole',
-                message: 'Select role to remove:',
-                choices: res
-            }
+            {type: 'list', name: 'deleteRole', message: 'Select role to remove:', choices: res}
         ]).then((answers) => {
+            console.log("\x1b[36m",`Role deleted!`,"\x1b[36m");
             connection.query(`DELETE FROM roles WHERE id = ${answers.deleteRole}`);
             doSomethingElse();
         })
@@ -261,13 +194,9 @@ function deleteRole(){
 function deleteDepartment(){
     connection.query(`SELECT id AS value, dept_name AS name FROM departments`, function(err, res) {
         inquirer.prompt([
-            {
-                type: 'list',
-                name: 'deleteDept',
-                message: 'Select department to remove:',
-                choices: res
-            }
+            {type: 'list', name: 'deleteDept', message: 'Select department to remove:', choices: res}
         ]).then((answers) => {
+            console.log("\x1b[36m",`Department deleted!`,"\x1b[36m");
             connection.query(`DELETE FROM departments WHERE id = ${answers.deleteDept}`);
             doSomethingElse();
         })
